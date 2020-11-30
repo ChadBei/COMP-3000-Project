@@ -3,8 +3,7 @@
 //
 
 #include <iostream>
-#include <iomanip>
-#include <ctime>
+#include <chrono>
 
 using namespace std;
 
@@ -12,15 +11,13 @@ using namespace std;
 void mergeSort(int[], int, int);
 void quickSort(int[], int, int);
 void bubbleSort(int[], int);
-void insertionSort(int[]);
-void blockSort(int[]);
-void slowSort(int[]);
+void insertionSort(int[], int);
+void stoogeSort(int[], int, int);
 
 // Utility Functions
 void printArray(int arr[], int n);
 //void printStats();
 void swap (int *x, int *y);
-// TODO: void excecutionTime()
 
 int const arr10_preSorted[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
     arr10_backwards[] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1},
@@ -48,14 +45,13 @@ int main(){
          << "2: Quick Sort" << endl
          << "3: Bubble Sort" << endl
          << "4: Insertion Sort" << endl
-         << "5: Block Sort" << endl
-         << "6: Slow Sort" << endl;
+         << "5: Stooge Sort" << endl;
 
     // Ensure a valid input is received
     do{
         cout << "Enter the number corresponding to an algorithm above:";
         cin >> input1;
-    } while (!(input1 >= '1' && input1 <= '6'));
+    } while (!(input1 >= '1' && input1 <= '5'));
     cout << endl;
 
 
@@ -77,7 +73,7 @@ int main(){
     } while (!(input2 >= '1' && input2 <= '9'));
     cout << endl;
 
-    // Interpret the input for the data selection, copying the
+    // Interpret the input for the data selection, copying the data into an array
     int arr[20], n = 0;
     switch (input2) {
         case '1':
@@ -119,28 +115,74 @@ int main(){
     }
 
 
-    // TODO: Left off here, figure out how to call the different functions, keepig in mind that it will be run multiple times.
     // Interpret the input for the sorting algorithm
     switch (input1) {
-        case '1':
+        case '1': {
+            cout << "Before sort: ";
+            printArray(arr, n);
+            auto mergeStart = std::chrono::steady_clock::now();
+            mergeSort(arr, 0, n - 1);
+            auto mergeStop = std::chrono::steady_clock::now();
+            double mergeSortTime = double(
+                    std::chrono::duration_cast<std::chrono::nanoseconds>(mergeStop - mergeStart).count());
+            cout << "After sort: ";
+            printArray(arr, n);
+            cout << "Execution time in ns: " << mergeSortTime << endl;
             break;
-        case '2':
+        }
+        case '2': {
+            cout << "Before sort: ";
+            printArray(arr, n);
+            auto quickStart = std::chrono::steady_clock::now();
+            quickSort(arr, 0, n - 1);
+            auto quickStop = std::chrono::steady_clock::now();
+            double quickSortTime = double(
+                    std::chrono::duration_cast<std::chrono::nanoseconds>(quickStop - quickStart).count());
+            cout << "After sort: ";
+            printArray(arr, n);
+            cout << "Execution time in ns: " << quickSortTime << endl;
             break;
-        case '3':
+        }
+        case '3': {
+            cout << "Before sort: ";
+            printArray(arr, n);
+            auto bubbleStart = std::chrono::steady_clock::now();
+            bubbleSort(arr, n - 1);
+            auto bubbleStop = std::chrono::steady_clock::now();
+            double bubbleSortTime = double(
+                    std::chrono::duration_cast<std::chrono::nanoseconds>(bubbleStop - bubbleStart).count());
+            cout << "After sort: ";
+            printArray(arr, n);
+            cout << "Execution time in ns: " << bubbleSortTime << endl;
             break;
-        case '4':
+        }
+        case '4': {
+            cout << "Before sort: ";
+            printArray(arr, n);
+            auto insertionStart = std::chrono::steady_clock::now();
+            insertionSort(arr, n - 1);
+            auto insertionStop = std::chrono::steady_clock::now();
+            double insertionSortTime = double(
+                    std::chrono::duration_cast<std::chrono::nanoseconds>(insertionStop - insertionStart).count());
+            cout << "After sort: ";
+            printArray(arr, n);
+            cout << "Execution time in ns: " << insertionSortTime << endl;
             break;
-        case '5':
+        }
+        case '5': {
+            cout << "Before sort: ";
+            printArray(arr, n);
+            auto stoogeStart = std::chrono::steady_clock::now();
+            stoogeSort(arr, 0, n - 1);
+            auto stoogeStop = std::chrono::steady_clock::now();
+            double stoogeSortTime = double(
+                    std::chrono::duration_cast<std::chrono::nanoseconds>(stoogeStop - stoogeStart).count());
+            cout << "After sort: ";
+            printArray(arr, n);
+            cout << "Execution time in ns: " << stoogeSortTime << endl;
             break;
+        }
     }
-
-    //Copy predefined array into an array to be manipulated
-    copy(begin(arr10_backwards), end(arr10_backwards), begin(arr));
-
-    printArray(arr, 10);
-    bubbleSort(arr, 10);
-    printArray(arr, 10);
-
 
     return 0;
 }
@@ -243,5 +285,36 @@ void quickSort(int arr[], int low, int high){
 
         quickSort(arr, low, pi - 1);
         quickSort(arr, pi + 1, high);
+    }
+}
+
+void insertionSort(int arr[], int n)
+{
+    int key, j;
+    for (int i = 1; i < n; i++)
+    {
+        key = arr[i];
+        j = i;
+        while (j > 0 && arr[j - 1] > key)
+        {
+            arr[j] = arr[j - 1];
+            j--;
+        }
+        arr[j] = key;
+    }
+}
+
+void stoogeSort(int arr[], int l, int h)
+{
+    if (l >= h)
+        return;
+    if (arr[l] > arr[h])
+        swap(arr[l], arr[h]);
+
+    if (h - l + 1 > 2) {
+        int t = (h - l + 1) / 3;
+        stoogeSort(arr, l, h - t);
+        stoogeSort(arr, l + t, h);
+        stoogeSort(arr, l, h - t);
     }
 }
