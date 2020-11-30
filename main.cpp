@@ -184,6 +184,36 @@ int main(){
         }
     }
 
+    char choice;
+    cout << "Would you like to restart? (Y/N): ";
+    cin >> choice;
+    if (choice == 'n' || choice == 'N')
+    {
+        return 0;
+    }
+    else if(choice == 'y' || choice == 'Y')
+    {
+        return main();
+    }
+    else
+    {
+        cout << "Please enter either a Y or N character.";
+        cin >> choice;
+        while (choice != 'y' || choice != 'n' || choice != 'Y' || choice != 'N')
+        {
+            cout << "Please enter either a Y or N character.";
+            cin >> choice;
+            if (choice == 'n' || choice == 'N')
+            {
+                return 0;
+            }
+            else if (choice == 'y' || choice == 'Y')
+            {
+                return main();
+            }
+        }
+    }
+
     return 0;
 }
 
